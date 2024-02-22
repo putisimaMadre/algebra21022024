@@ -17,6 +17,7 @@ public class TerminoServiceImpl implements TerminoService {
         terminosSeparados.put("todo", expresionAlgebraica);
         boolean banderaPrimeraEntrada = true;
         int contador = 0;
+        //listo
         int inicio = 0;
         char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
         String coeficiente = "";
