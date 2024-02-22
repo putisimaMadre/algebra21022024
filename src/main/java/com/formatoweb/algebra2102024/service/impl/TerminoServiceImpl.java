@@ -14,38 +14,52 @@ public class TerminoServiceImpl implements TerminoService {
     @Override
     public Map<String, Object> separacionElementos(String expresionAlgebraica) {
         Map<String, Object> terminosSeparados = new HashMap<>();
+        Map<String, Object> literalYvalores = new HashMap<>();
+        terminosSeparados.put("todo", expresionAlgebraica);
         boolean banderaPrimeraEntrada = true;
-        int j = 0;
+        int contador = 0;
+        int inicio = 0;
         char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
         String coeficiente = "";
-        terminosSeparados.put("todo", expresionAlgebraica);
+        char literal;
+        StringBuilder literalValor = new StringBuilder();
+        boolean literalBandera = false;
+
         if (expresionAlgebraicaChar[0] == '-'){
             terminosSeparados.put("signo", expresionAlgebraicaChar[0]);
-            j = 1;
-            for (int i = 1; i < expresionAlgebraicaChar.length; i++) {
-                if (Character.isDigit(expresionAlgebraicaChar[i]) && j == i){ //Cuando son numeros
-                    j++;
+            inicio = 1;
+            contador = 1;
+        }else{
+            terminosSeparados.put("signo", '+');
+            inicio = 0;
+        }
+            for (int i = inicio; i < expresionAlgebraicaChar.length; i++) {
+                if (literalBandera){
+                    literalValor.append(expresionAlgebraicaChar[i]);
+                    literalBandera = false;
+                }
+                if (Character.isDigit(expresionAlgebraicaChar[i]) && contador == i){ //Cuando son numeros
+                    contador++;
                     coeficiente = coeficiente + expresionAlgebraicaChar[i];
-                    if (expresionAlgebraicaChar.length-1 == i){
-                        terminosSeparados.put("coeficiente", coeficiente);
-                    }
                 }else if (expresionAlgebraicaChar[i] == '/'){   //Cuando es una fraccion
-                    j=i;
-                    j++;
+                    contador=i;
+                    contador++;
                     banderaPrimeraEntrada = true;
                     coeficiente = coeficiente + expresionAlgebraicaChar[i];
                     if (coeficiente.equals("/")){
                         coeficiente = "1/";
                     }
-                    //System.out.println("esta entrando a la barra: " + expresionAlgebraicaChar[i]);
                 }else {     //Cuando es una letra o un simbolo (Cuando es algo que no es un numero)
+                    //Para Literal
+                    literal = expresionAlgebraicaChar[i];
+                    literalBandera = true;
+                    //Para Coeficiente
                     char[] coeficienteChar = coeficiente.toCharArray();
                     int coeficienteLength = coeficienteChar.length;
                     if (banderaPrimeraEntrada){
                         banderaPrimeraEntrada = false;
                         if (coeficienteLength > 1) {
                             if (coeficienteChar[coeficienteLength - 1] == '/') {
-                                System.out.println(coeficienteChar[coeficienteLength - 1]);
                                 coeficiente = coeficiente + "1";
                             }
                         }
@@ -56,11 +70,10 @@ public class TerminoServiceImpl implements TerminoService {
                     }
                 }
             }
-        }else{
-            terminosSeparados.put("signo", '+');
-        }
+            terminosSeparados.put("Literal", coeficiente);
         return terminosSeparados;
     }
+
 
     @Override
     public String getLiteral(String literal) {
