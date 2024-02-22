@@ -14,16 +14,12 @@ public class TerminoServiceImpl implements TerminoService {
     @Override
     public Map<String, Object> separacionElementos(String expresionAlgebraica) {
         Map<String, Object> terminosSeparados = new HashMap<>();
-        Map<String, Object> literalYvalores = new HashMap<>();
         terminosSeparados.put("todo", expresionAlgebraica);
         boolean banderaPrimeraEntrada = true;
         int contador = 0;
         int inicio = 0;
         char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
         String coeficiente = "";
-        char literal;
-        StringBuilder literalValor = new StringBuilder();
-        boolean literalBandera = false;
 
         if (expresionAlgebraicaChar[0] == '-'){
             terminosSeparados.put("signo", expresionAlgebraicaChar[0]);
@@ -31,13 +27,9 @@ public class TerminoServiceImpl implements TerminoService {
             contador = 1;
         }else{
             terminosSeparados.put("signo", '+');
-            inicio = 0;
+            contador = 0;
         }
-            for (int i = inicio; i < expresionAlgebraicaChar.length; i++) {
-                if (literalBandera){
-                    literalValor.append(expresionAlgebraicaChar[i]);
-                    literalBandera = false;
-                }
+            for (int i = contador; i < expresionAlgebraicaChar.length; i++) {
                 if (Character.isDigit(expresionAlgebraicaChar[i]) && contador == i){ //Cuando son numeros
                     contador++;
                     coeficiente = coeficiente + expresionAlgebraicaChar[i];
@@ -50,9 +42,6 @@ public class TerminoServiceImpl implements TerminoService {
                         coeficiente = "1/";
                     }
                 }else {     //Cuando es una letra o un simbolo (Cuando es algo que no es un numero)
-                    //Para Literal
-                    literal = expresionAlgebraicaChar[i];
-                    literalBandera = true;
                     //Para Coeficiente
                     char[] coeficienteChar = coeficiente.toCharArray();
                     int coeficienteLength = coeficienteChar.length;
@@ -66,11 +55,10 @@ public class TerminoServiceImpl implements TerminoService {
                         if (coeficiente.isEmpty()){
                             coeficiente = "1";
                         }
-                        terminosSeparados.put("coeficiente", coeficiente);
                     }
                 }
             }
-            terminosSeparados.put("Literal", coeficiente);
+            terminosSeparados.put("coeficiente", coeficiente);
         return terminosSeparados;
     }
 
