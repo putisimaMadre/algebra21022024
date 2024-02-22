@@ -1,4 +1,4 @@
-package com.formatoweb.algebra2102024.tools;
+package com.formatoweb.algebra2102024.model;
 
 public class Termino {
     //es una expresion algebraica que consta de un solo o de varios simbolos
