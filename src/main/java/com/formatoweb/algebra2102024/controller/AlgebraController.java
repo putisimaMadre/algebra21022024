@@ -12,7 +12,11 @@ public class AlgebraController {
 @Autowired
 private TerminoService terminoService;
     @PostMapping("/terminos")
-    public Map<String, Object> separacionTerminos(@RequestBody String expresionAlgebraica){
-        return terminoService.separacionElementos(expresionAlgebraica);
+    public void separacionTerminos(@RequestBody String expresionAlgebraica){
+        System.out.println("Signo: "+terminoService.getSigno(expresionAlgebraica));
+        System.out.println("Coeficiente: "+terminoService.getCoeficiente(expresionAlgebraica));
+        System.out.println("Literal: "+terminoService.getLiteral(expresionAlgebraica));
+        System.out.println("Exponente: "+terminoService.getExponente(expresionAlgebraica));
+        System.out.println("----------------------------------------------------------------------------");
     }
 }

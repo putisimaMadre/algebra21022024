@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface TerminoService {
-    Map<String, Object> separacionElementos(String expresionAlgebraica);
-    String getLiteral(String literal);
-    List<Termino> getTermino(String expresionAlgebraica);
+    public char getSigno(String expresionAlgebraica);
+    public String getCoeficiente(String expresionAlgebraica);
+    List<String> getLiteral(String expresionAlgebraica);
+    List<String> getExponente(String expresionAlgebraica);
+
 }

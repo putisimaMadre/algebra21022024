@@ -1,25 +1,15 @@
 package com.formatoweb.algebra2102024.service.impl;
 
 import com.formatoweb.algebra2102024.service.TerminoService;
-import com.formatoweb.algebra2102024.model.Termino;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TerminoServiceImpl implements TerminoService {
-    @Override
-    public Map<String, Object> separacionElementos(String expresionAlgebraica) {
-        Map<String, Object> elementos = new HashMap<>();
-        elementos.put("signo", getSigno(expresionAlgebraica));
-        elementos.put("coeficiente", getCoeficiente(expresionAlgebraica));
-        return elementos;
-    }
 
-    private char getSigno(String expresionAlgebraica){
+    public char getSigno(String expresionAlgebraica){
         char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
         char signo;
         if (expresionAlgebraicaChar[0] == '-'){
@@ -30,7 +20,7 @@ public class TerminoServiceImpl implements TerminoService {
         return signo;
     }
 
-    private String getCoeficiente(String expresionAlgebraica){
+    public String getCoeficiente(String expresionAlgebraica){
         char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
         int contador = 0;
         boolean banderaPrimeraEntrada = true;
@@ -74,17 +64,65 @@ public class TerminoServiceImpl implements TerminoService {
     }
 
     @Override
-    public String getLiteral(String literal) {
-        return null;
+    public List<String> getLiteral(String expresionAlgebraica) {
+        char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
+        boolean banderaGuardadoLetra = true;
+        List<String> base = new ArrayList<>();
+        for (int i = 0; i < expresionAlgebraicaChar.length; i++) {
+            if (Character.isAlphabetic(expresionAlgebraicaChar[i])){
+                if (banderaGuardadoLetra) {
+                    base.add(String.valueOf(expresionAlgebraicaChar[i]));
+                }else {
+                    if (Character.isAlphabetic(expresionAlgebraicaChar[i-1])){
+                        base.add(String.valueOf(expresionAlgebraicaChar[i]));
+                    }
+                }
+            } else if (expresionAlgebraicaChar[i] == '('){
+                banderaGuardadoLetra = false;
+            } else if (expresionAlgebraicaChar[i] == ')'){
+                banderaGuardadoLetra = true;
+            }else if (expresionAlgebraicaChar[i] == '/'){
+                base.add(String.valueOf(expresionAlgebraicaChar[i]));
+            }
+        }
+        return base;
     }
 
     @Override
-    public List<Termino> getTermino(String expresionAlgebraica) {
-        List<Termino> terminos = new ArrayList<>();
-        Termino termino = new Termino('-', 5, "a2+1b3c", 2);
-        Termino termino2 = new Termino('-', 3, "d4f5k", 2);
-        terminos.add(termino);
-        terminos.add(termino2);
-        return terminos;
+    public List<String> getExponente(String expresionAlgebraica) {
+        char[] expresionAlgebraicaChar = expresionAlgebraica.toCharArray();
+        boolean banderaExponente = false;
+        //boolean banderaBase = false;
+        String exponenteCadena = "";
+        List<String> exponente = new ArrayList<>();
+        int exponenteLength = expresionAlgebraicaChar.length;
+
+        for (int i = 0; i < expresionAlgebraicaChar.length; i++) {
+            if (expresionAlgebraicaChar[i] == '('){
+                banderaExponente = true;
+                exponenteCadena = "";
+            }
+            if (banderaExponente){
+                exponenteCadena = exponenteCadena + expresionAlgebraicaChar[i];
+            }
+            if (expresionAlgebraicaChar[i] == ')'){
+                banderaExponente = false;
+                exponente.add(exponenteCadena);
+                exponenteCadena = "";
+            }
+            if (Character.isAlphabetic(expresionAlgebraicaChar[i]) && !banderaExponente){
+                if (i>0) {
+                    if (Character.isAlphabetic(expresionAlgebraicaChar[i - 1])) {
+                        exponente.add("1");
+                    }
+                }
+            }
+            if (exponenteLength-1 == i){
+                if (Character.isAlphabetic(expresionAlgebraicaChar[exponenteLength-1])) {
+                    exponente.add("1");
+                }
+            }
+        }
+        return exponente;
     }
 }
