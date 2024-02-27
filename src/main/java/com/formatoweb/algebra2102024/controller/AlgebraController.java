@@ -15,6 +15,7 @@ public class AlgebraController {
 private TerminoService terminoService;
     @PostMapping("/terminos")
     public Map<String, Object> separacionTerminos(@RequestBody String expresionAlgebraica){
+        System.out.println("que tal");
         return terminoService.separacionElementos(expresionAlgebraica);
     }
 }
